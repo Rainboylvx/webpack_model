@@ -3,6 +3,14 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const Webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+var config
+if( process.env.NODE_ENV == 'development')
+    config = require("./config/dev.js")
+else
+    config = require("./config/build.js")
+
+console.log(config)
+
 module.exports = {
     mode:'development',
     entry:'./src/index.js',
@@ -13,23 +21,14 @@ module.exports = {
     },
     plugins:[
         new Webpack.HotModuleReplacementPlugin(),
-        new ExtractTextPlugin('css/app.css'),
         new HtmlWebpackPlugin({
             title:'Hello World',
             template: './src/index.html', //模板地址
             filename:'../index.html'
         }),
-    ],
+    ].concat(config.plugins),
     module:{
         rules:[
-            { 
-                test: /\.styl$/, 
-                use: ExtractTextPlugin.extract({
-                    use: [ 'css-loader', 'stylus-loader' ],
-                    publicPath:'../' //解决css图片中的路径问题
-                })
-                //loader: 'style-loader!css-loader!stylus-loader' 
-            },
             {
                 test:/\.(png|jpg|gif)$/,
                 use:[{
@@ -41,8 +40,7 @@ module.exports = {
                     }
                 }]
             }
-
-        ]
+        ].concat(config.module.rules)
     },
     devServer:{ //我们在这里对webpack-dev-server进行配置
         contentBase:'./', //在哪个路径里启动 server
