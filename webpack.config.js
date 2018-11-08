@@ -16,7 +16,7 @@ module.exports = {
     entry:'./src/index.js',
     output:{
         filename:'bundle.js',
-        publicPath:'/dist/',    //公用路径,会影响css里的路径,同样production的时候转成cdn很好用
+        publicPath:'/',    //公用路径,会影响css里的路径,同样production的时候转成cdn很好用
         path:path.join(__dirname,'dist')
     },
     plugins:[
@@ -24,7 +24,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             title:'Hello World',
             template: './src/index.html', //模板地址
-            filename:'../index.html'
+            filename:'index.html'
         }),
     ].concat(config.plugins),
     module:{
@@ -43,7 +43,7 @@ module.exports = {
         ].concat(config.module.rules)
     },
     devServer:{ //我们在这里对webpack-dev-server进行配置
-        contentBase:'./', //在哪个路径里启动 server
+        //contentBase:path.join(__dirname,"dist"), //在哪个路径里启动 server
         host:'0.0.0.0',
         /*
          *historyApiFallback:{ //这个对单页面的程序的history api 的404 起作用
