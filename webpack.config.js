@@ -2,6 +2,8 @@ const path = require("path");
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const Webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webConfig = require("./config.js")
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 var config
 if( process.env.NODE_ENV == 'development')
@@ -21,14 +23,31 @@ module.exports = {
     },
     plugins:[
         new Webpack.HotModuleReplacementPlugin(),
+        new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
-            title:'Hello World',
+            title:webConfig.title || 'title',
             template: './src/index.html', //模板地址
             filename:'index.html'
         }),
     ].concat(config.plugins),
     module:{
         rules:[
+            {
+                test: /\.css$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader'
+                ],
+            },      
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+                options: {
+                    loaders: {
+                    }
+                    // other vue-loader options go here
+                }
+            },
             {
                 test:/\.(png|jpg|gif)$/,
                 use:[{
@@ -42,6 +61,12 @@ module.exports = {
             }
         ].concat(config.module.rules)
     },
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js'
+        },
+        extensions: ['*', '.js', '.vue', '.json']
+    },
     devServer:{ //我们在这里对webpack-dev-server进行配置
         //contentBase:path.join(__dirname,"dist"), //在哪个路径里启动 server
         host:'0.0.0.0',
@@ -54,6 +79,7 @@ module.exports = {
          *},
          */
         overlay: true, //错误会显示在html页面上
+        historyApiFallback: true,
         stats: "errors-only", //编译的输出
     }
 }

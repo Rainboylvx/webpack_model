@@ -8,13 +8,6 @@ module.exports =
         ],
         module:{
             rules:[
-                { 
-                    test: /\.css$/, 
-                    use: ExtractTextPlugin.extract({
-                        use: [ 'css-loader'],
-                        publicPath:'../' //解决css图片中的路径问题
-                    })
-                },
                 {
                     test: /\.scss$/, 
                     use: ExtractTextPlugin.extract({
