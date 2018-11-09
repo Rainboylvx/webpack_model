@@ -49,7 +49,7 @@ module.exports = {
                 }
             },
             {
-                test:/\.(png|jpg|gif)$/,
+                test:/\.(png)|(jpg)|(gif)|(woff)|(svg)|(eot)|(ttf)$/,
                 use:[{
                     loader:'url-loader',
                     options:{ // 这里的options选项参数可以定义多大的图片转换为base64
@@ -63,7 +63,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'vue$': 'vue/dist/vue.esm.js'
+            'vue$': 'vue/dist/vue.esm.js',
+            '@':path.resolve(__dirname, 'src')
         },
         extensions: ['*', '.js', '.vue', '.json']
     },
