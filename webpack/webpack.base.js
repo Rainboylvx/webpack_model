@@ -1,35 +1,23 @@
 const path = require("path");
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const Webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const webConfig = require("./config.js")
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
-var config
-if( process.env.NODE_ENV == 'development')
-    config = require("./config/dev.js")
-else
-    config = require("./config/build.js")
-
-console.log(config)
+const _dir = __dirname
 
 module.exports = {
     mode:'development',
-    entry:'./src/index.js',
+    entry:path.join(_dir,'../src/main.js'),
     output:{
         filename:'bundle.js',
         publicPath:'/',    //公用路径,会影响css里的路径,同样production的时候转成cdn很好用
-        path:path.join(__dirname,'dist')
+        path: path.resolve(__dirname, '../dist'),
+
     },
     plugins:[
         new Webpack.HotModuleReplacementPlugin(),
-        new VueLoaderPlugin(),
-        new HtmlWebpackPlugin({
-            title:webConfig.title || 'title',
-            template: './src/index.html', //模板地址
-            filename:'index.html'
-        }),
-    ].concat(config.plugins),
+        new VueLoaderPlugin()
+    ],
     module:{
         rules:[
             {
@@ -59,28 +47,13 @@ module.exports = {
                     }
                 }]
             }
-        ].concat(config.module.rules)
+        ]
     },
     resolve: {
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
-            '@':path.resolve(__dirname, 'src')
+            '@':path.resolve(__dirname, '../src')
         },
         extensions: ['*', '.js', '.vue', '.json']
-    },
-    devServer:{ //我们在这里对webpack-dev-server进行配置
-        //contentBase:path.join(__dirname,"dist"), //在哪个路径里启动 server
-        host:'0.0.0.0',
-        /*
-         *historyApiFallback:{ //这个对单页面的程序的history api 的404 起作用
-         *    rewrites:[{
-         *        from:/./,
-         *        to:'/'
-         *    }]
-         *},
-         */
-        overlay: true, //错误会显示在html页面上
-        historyApiFallback: true,
-        stats: "errors-only", //编译的输出
     }
 }
